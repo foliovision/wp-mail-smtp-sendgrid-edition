@@ -508,26 +508,26 @@ endif;
 /**
  * This function sets the SendGrid headers to be able to see subject on the Activity screen
  */
-if (!function_exists('wp_mail_smtp_mail_from_name')) :
+if (!function_exists('wp_mail_smtp_sendgrid_headers')) :
 function wp_mail_smtp_sendgrid_headers ($atts) {
 
-    $bIsSendGrid = false;
-    $sMailHost = get_option('smtp_host');
-    if (defined('WPMS_ON') && WPMS_ON && WPMS_SMTP_HOST ) {
-      $sMailHost = WPMS_SMTP_HOST;
-    }
-    if( stripos($sMailHost,'.sendgrid.') !== false ) $bIsSendGrid = true;
-  
-    if( $bIsSendGrid && isset($atts['subject']) ) {
-      $unique_args = json_encode( array( 'unique_args' => array( 'subject' => $atts['subject'] ) ) );
-      if( is_array($atts['headers']) ) {
-        $atts['headers'][] = 'X-SMTPAPI: '.$unique_args;
-      } else if( strlen($atts[3]) ) {
-        $atts['headers'] .= "\nX-SMTPAPI: ".$unique_args;
-      } else {
-        $atts['headers'] = "X-SMTPAPI: ".$unique_args;
-      }
-    }
+	$bIsSendGrid = false;
+	$sMailHost = get_option('smtp_host');
+	if (defined('WPMS_ON') && WPMS_ON && WPMS_SMTP_HOST ) {
+		$sMailHost = WPMS_SMTP_HOST;
+	}
+	if( stripos($sMailHost,'.sendgrid.') !== false ) $bIsSendGrid = true;
+	
+	if( $bIsSendGrid && isset($atts['subject']) ) {
+		$unique_args = json_encode( array( 'unique_args' => array( 'subject' => $atts['subject'] ) ) );
+		if( is_array($atts['headers']) ) {
+			$atts['headers'][] = 'X-SMTPAPI: '.$unique_args;
+		} else if( strlen($atts[3]) ) {
+			$atts['headers'] .= "\nX-SMTPAPI: ".$unique_args;
+		} else {
+			$atts['headers'] = "X-SMTPAPI: ".$unique_args;
+		}
+	}
 
 	return $atts;
 
