@@ -67,6 +67,9 @@ By all means please contact me to discuss features or options you'd like to see 
 
 == Changelog ==
 
+= 0.10.2 =
+* SendGrid - adding email subject to the X-SMTPAPI header if the STMP host is on SendGrid, thanks to Foliovision
+
 = 0.10.1 =
 * Addition of Pepipost and cleanup of admin page.
 

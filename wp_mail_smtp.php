@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WP-Mail-SMTP
-Version: 0.10.1
+Version: 0.10.2
 Plugin URI: http://www.callum-macdonald.com/code/wp-mail-smtp/
 Description: Reconfigures the wp_mail() function to use SMTP instead of mail() and creates an options page to manage the settings.
 Author: Callum Macdonald
@@ -504,6 +504,37 @@ function wp_mail_smtp_mail_from_name ($orig) {
 } // End of wp_mail_smtp_mail_from_name() function definition
 endif;
 
+
+/**
+ * This function sets the SendGrid headers to be able to see subject on the Activity screen
+ */
+if (!function_exists('wp_mail_smtp_mail_from_name')) :
+function wp_mail_smtp_sendgrid_headers ($atts) {
+
+    $bIsSendGrid = false;
+    $sMailHost = get_option('smtp_host');
+    if (defined('WPMS_ON') && WPMS_ON && WPMS_SMTP_HOST ) {
+      $sMailHost = WPMS_SMTP_HOST;
+    }
+    if( stripos($sMailHost,'.sendgrid.') !== false ) $bIsSendGrid = true;
+  
+    if( $bIsSendGrid && isset($atts['subject']) ) {
+      $unique_args = json_encode( array( 'unique_args' => array( 'subject' => $atts['subject'] ) ) );
+      if( is_array($atts['headers']) ) {
+        $atts['headers'][] = 'X-SMTPAPI: '.$unique_args;
+      } else if( strlen($atts[3]) ) {
+        $atts['headers'] .= "\nX-SMTPAPI: ".$unique_args;
+      } else {
+        $atts['headers'] = "X-SMTPAPI: ".$unique_args;
+      }
+    }
+
+	return $atts;
+
+} // End of wp_mail_smtp_sendgrid_headers() function definition
+endif;
+
+
 function wp_mail_plugin_action_links( $links, $file ) {
 	if ( $file != plugin_basename( __FILE__ ))
 		return $links;
@@ -532,6 +563,9 @@ if (!defined('WPMS_ON') || !WPMS_ON) {
 // Add filters to replace the mail from name and emailaddress
 add_filter('wp_mail_from','wp_mail_smtp_mail_from');
 add_filter('wp_mail_from_name','wp_mail_smtp_mail_from_name');
+
+//  Add some extra headers for SendGrid
+add_filter( 'wp_mail', 'wp_mail_smtp_sendgrid_headers', 99999999 );
 
 load_plugin_textdomain('wp_mail_smtp', false, dirname(plugin_basename(__FILE__)) . '/langs');
 
