@@ -522,7 +522,7 @@ function wp_mail_smtp_sendgrid_headers ($atts) {
 		$unique_args = json_encode( array( 'unique_args' => array( 'subject' => $atts['subject'] ) ) );
 		if( is_array($atts['headers']) ) {
 			$atts['headers'][] = 'X-SMTPAPI: '.$unique_args;
-		} else if( strlen($atts[3]) ) {
+		} else if( strlen($atts['headers']) ) {
 			$atts['headers'] .= "\nX-SMTPAPI: ".$unique_args;
 		} else {
 			$atts['headers'] = "X-SMTPAPI: ".$unique_args;
