@@ -1,16 +1,16 @@
 <?php
 /*
-Plugin Name: WP-Mail-SMTP
+Plugin Name: WP-Mail-SMTP SendGrid Edition
 Version: 0.10.2
 Plugin URI: http://www.callum-macdonald.com/code/wp-mail-smtp/
-Description: Reconfigures the wp_mail() function to use SMTP instead of mail() and creates an options page to manage the settings.
-Author: Callum Macdonald
-Author URI: http://www.callum-macdonald.com/
+Description: Reconfigures the wp_mail() function to use SMTP instead of mail() and creates an options page to manage the settings. Adds subject to headers for SendGrid Activity Screen.
+Author: Foliovision
+Author URI: https://foliovision.com/
 */
 
 /**
- * @author Callum Macdonald
- * @copyright Callum Macdonald, 2007-11, All Rights Reserved
+ * @author Foliovision
+ * @copyright Foliovision, 2007-11, All Rights Reserved
  * This code is released under the GPL licence version 3 or later, available here
  * http://www.gnu.org/licenses/gpl.txt
  */
@@ -48,11 +48,7 @@ $wpms_options = array (
 	'smtp_ssl' => 'none',
 	'smtp_auth' => false,
 	'smtp_user' => '',
-	'smtp_pass' => '',
-	'pepipost_user' => '',
-	'pepipost_pass' => '',
-	'pepipost_port' => '2525',
-	'pepipost_ssl' => 'none'
+	'smtp_pass' => ''
 );
 
 
@@ -120,11 +116,6 @@ function phpmailer_init_smtp($phpmailer) {
 			return;
 		}
 
-    // If the mailer is pepipost, make sure we have a username and password
-    if (get_option('mailer') == 'pepipost' && (! get_option('pepipost_user') && ! get_option('pepipost_pass'))) {
-      return;
-    }
-
 		// Set the mailer type as per config above, this overrides the already called isMail method
 		$phpmailer->Mailer = get_option('mailer');
 
@@ -151,16 +142,7 @@ function phpmailer_init_smtp($phpmailer) {
 				$phpmailer->Username = get_option('smtp_user');
 				$phpmailer->Password = get_option('smtp_pass');
 			}
-		} elseif (get_option('mailer') == 'pepipost') {
-      // Set the Pepipost settings
-      $phpmailer->Mailer = 'smtp';
-      $phpmailer->Host = 'smtp.pepipost.com';
-      $phpmailer->Port = get_option('pepipost_port');
-      $phpmailer->SMTPSecure = get_option('pepipost_ssl') == 'none' ? '' : get_option('pepipost_ssl');;
-      $phpmailer->SMTPAuth = TRUE;
-      $phpmailer->Username = get_option('pepipost_user');
-      $phpmailer->Password = get_option('pepipost_pass');
-    }
+		}
 
 		// You can add your own options here, see the phpmailer documentation for more info:
 		// http://phpmailer.sourceforge.net/docs/
@@ -266,12 +248,9 @@ function wp_mail_smtp_options_page() {
 <td><fieldset><legend class="screen-reader-text"><span><?php _e('Mailer', 'wp_mail_smtp'); ?></span></legend>
 <p><input id="mailer_smtp" class="wpms_mailer" type="radio" name="mailer" value="smtp" <?php checked('smtp', get_option('mailer')); ?> />
 <label for="mailer_smtp"><?php _e('Send all WordPress emails via SMTP.', 'wp_mail_smtp'); ?></label></p>
-<p><input id="mailer_pepipost" class="wpms_mailer" type="radio" name="mailer" value="pepipost" <?php checked('pepipost', get_option('mailer')); ?> />
-<label for="mailer_pepipost"><?php _e('Use Pepipost SMTP to send emails.', 'wp_mail_smtp'); ?></label></p>
 <p><input id="mailer_mail" class="wpms_mailer" type="radio" name="mailer" value="mail" <?php checked('mail', get_option('mailer')); ?> />
 <label for="mailer_mail"><?php _e('Use the PHP mail() function to send emails.', 'wp_mail_smtp'); ?></label></p>
 </fieldset>
-<p class="description">Looking for high inbox delivery? Try Pepipost with easy setup and free emails. Learn more <a href="https://app1.pepipost.com/index.php/login/wp_mail_smtp?page=signup&utm_source=WordPress&utm_campaign=Plugins&utm_medium=wp_mail_smtp&utm_term=organic&code=WP-MAIL-SMTP" target="_blank">here</a>.</p>
 </td>
 </tr>
 </table>
@@ -344,44 +323,6 @@ function wp_mail_smtp_options_page() {
 
 <p class="submit"><input type="submit" name="submit" id="submit" class="button-primary" value="<?php _e('Save Changes'); ?>" /></p>
 </div><!-- #wpms_section_smtp -->
-
-<div id="wpms_section_pepipost" class="wpms_section">
-  <h3><?php _e('Pepipost SMTP Options', 'wp_mail_smtp'); ?></h3>
-  <p>You need to signup on <a href="https://app1.pepipost.com/index.php/login/wp_mail_smtp?page=signup&utm_source=WordPress&utm_campaign=Plugins&utm_medium=wp_mail_smtp&utm_term=organic&code=WP-MAIL-SMTP" target="_blank">Pepipost</a> to get the SMTP username/password. Refer this <a href="http://support.pepipost.com/knowledge_base/topics/wp-mail-smtp?utm_source=WordPress&utm_campaign=Plugins&utm_medium=wp_mail_smtp&utm_term=organic" target="_blank">doc</a> for more help.</p>
-  <table class="optiontable form-table">
-    <tr valign="top">
-      <th scope="row"><label for="pepipost_user"><?php _e('Username', 'wp_mail_smtp'); ?></label></th>
-      <td><input name="pepipost_user" type="text" id="pepipost_user" value="<?php print(get_option('pepipost_user')); ?>" size="40" class="code" /></td>
-    </tr>
-    <tr valign="top">
-      <th scope="row"><label for="pepipost_pass"><?php _e('Password', 'wp_mail_smtp'); ?></label></th>
-      <td><input name="pepipost_pass" type="text" id="pepipost_pass" value="<?php print(get_option('pepipost_pass')); ?>" size="40" class="code" /></td>
-    </tr>
-		<tr valign="top">
-			<th scope="row"><label for="pepipost_port"><?php _e('SMTP Port', 'wp_mail_smtp'); ?></label></th>
-			<td><input name="pepipost_port" type="text" id="pepipost_port" value="<?php print(get_option('pepipost_port')); ?>" size="6" class="regular-text" /></td>
-		</tr>
-		<tr valign="top">
-			<th scope="row"><?php _e('Encryption', 'wp_mail_smtp'); ?> </th>
-			<td>
-			  <fieldset>
-			    <legend class="screen-reader-text">
-						<span>
-							<?php _e('Encryption', 'wp_mail_smtp'); ?>
-						</span>
-					</legend>
-				<input id="pepipost_ssl_none" type="radio" name="pepipost_ssl" value="none" <?php checked('none', get_option('pepipost_ssl')); ?> />
-				<label for="pepipost_ssl_none"><span><?php _e('No encryption.', 'wp_mail_smtp'); ?></span></label><br />
-				<input id="pepipost_ssl_ssl" type="radio" name="pepipost_ssl" value="ssl" <?php checked('ssl', get_option('pepipost_ssl')); ?> />
-				<label for="pepipost_ssl_ssl"><span><?php _e('Use SSL encryption.', 'wp_mail_smtp'); ?></span></label><br />
-				<input id="pepipost_ssl_tls" type="radio" name="pepipost_ssl" value="tls" <?php checked('tls', get_option('pepipost_ssl')); ?> />
-				<label for="pepipost_ssl_tls"><span><?php _e('Use TLS encryption.', 'wp_mail_smtp'); ?></span></label>
-			</td>
-		</tr>
-  </table>
-
-  <p class="submit"><input type="submit" name="submit" id="submit" class="button-primary" value="<?php _e('Save Changes'); ?>" /></p>
-</div><!-- #wpms_section_pepipost -->
 
 
 <input type="hidden" name="action" value="update" />

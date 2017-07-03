@@ -1,12 +1,12 @@
 === WP Mail SMTP ===
-Contributors: chmac
-Donate link: http://www.callum-macdonald.com/code/donate/
-Tags: mail, smtp, wp_mail, mailer, phpmailer
+Contributors: FolioVision
+Donate link: https://foliovision.com/donate
+Tags: mail, smtp, wp_mail, mailer, phpmailer, sendgrid
 Requires at least: 2.7
-Tested up to: 4.7
-Stable tag: 0.10.1
+Tested up to: 4.8
+Stable tag: trunk
 
-The most popular SMTP plugin on WordPress.org. Trusted by over 500'000 sites.
+Based on WP Mail SMTP. Also adds subject for display on SendGrid Activity Screen.
 
 == Description ==
 
@@ -22,7 +22,7 @@ You can set the following options:
 * Choose to use SMTP authentication or not (defaults to not).
 * Specify an SMTP username and password.
 
-The plugin includes integrated support for <a href="https://app1.pepipost.com/index.php/login/wp_mail_smtp?page=signup&utm_source=WordPress&utm_campaign=Plugins&utm_medium=wp_mail_smtp_webpage&utm_term=organic&code=WP-MAIL-SMTP">Pepipost</a>.
+Also adds subject to headers for SendGrid Activity Screen. SengGrid is a powerful SMTP service, however it's Activity Log screen misses the message subjects. Our plugin adds that back in!
 
 == Installation ==
 
@@ -51,24 +51,18 @@ Authentication: Yes
 Username: your full gmail address
 Password: your mail password
 
-= Can you add feature x, y or z to the plugin? =
-
-Short answer: maybe.
-
-By all means please contact me to discuss features or options you'd like to see added to the plugin. I can't guarantee to add all of them, but I will consider all sensible requests. I can be contacted here:
-<http://www.callum-macdonald.com/code/wp-mail-smtp/>
-
 == Screenshots ==
 
 1. Advanced Email Options
 2. SMTP Options
-3. Pepipost SMTP Options
-4. Send a Test Email
+3. Send a Test Email
+4. Subject in the SendGrid Activity screen
 
 == Changelog ==
 
 = 0.10.2 =
-* SendGrid - adding email subject to the X-SMTPAPI header if the STMP host is on SendGrid, thanks to Foliovision
+* SendGrid - adding email subject to the X-SMTPAPI header if the STMP host is on SendGrid, thanks to Foliovision.
+* Pepipost - removing
 
 = 0.10.1 =
 * Addition of Pepipost and cleanup of admin page.
@@ -164,46 +158,4 @@ By all means please contact me to discuss features or options you'd like to see 
 = 0.1 =
 * Initial approach, copying the wp_mail function and replacing it
 
-== Upgrade Notice ==
 
-= 0.10.1 =
-Addition of Pepipost and cleanup of admin page.
-
-= 0.10.0 =
-Addition of Pepipost and cleanup of admin page.
-
-= 0.9.6 =
-Minor security fix, sanitize test email address.
-
-= 0.9.5 =
-Minor security fix, hat tip JD Grimes.
-
-= 0.9.4 =
-Improvement to the test email function, very low priority update.
-
-= 0.9.3 =
-Fixing reported issue with passing by reference.
-
-= 0.9.2 =
-Removing the deprecation notice.
-
-= 0.9.1 =
-Test mail functionality was broken on upgrade to 3.2, now restored.
-
-= 0.9.0 =
-Low priority upgrade. Improves the appearance of the options page.
-
-= 0.8.7 =
-Very low priority update. Fixes a bug that causes a spurious error during activation.
-
-= 0.8.6 =
-Low priority update. The Settings link was still broken in 0.8.5.
-
-= 0.8.5 =
-Minor bugfix correcting the Settings link bug introduced in 0.8.4. Very low priority update.
-
-= 0.8.4 =
-Minor bugfix for users using constants. Another very low priority upgrade. Apologies for the version creep.
-
-= 0.8.3 =
-Minor bugfix for users using constants. Very low priority upgrade.
