@@ -1,4 +1,4 @@
-=== WP Mail SMTP ===
+=== WP Mail SMTP SendGrid Edition ===
 Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: mail, smtp, wp_mail, mailer, phpmailer, sendgrid
