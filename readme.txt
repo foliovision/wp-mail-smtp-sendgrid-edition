@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: mail, smtp, wp_mail, mailer, phpmailer, sendgrid
 Requires at least: 2.7
-Tested up to: 4.8
+Tested up to: 4.9.6
 Stable tag: trunk
 
 Based on WP Mail SMTP. Also adds subject for display on SendGrid Activity Screen.
