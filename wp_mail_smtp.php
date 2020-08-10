@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WP-Mail-SMTP SendGrid Edition
-Version: 0.10.2
+Version: 0.10.3
 Plugin URI: http://www.callum-macdonald.com/code/wp-mail-smtp/
 Description: Reconfigures the wp_mail() function to use SMTP instead of mail() and creates an options page to manage the settings. Adds subject to headers for SendGrid Activity Screen.
 Author: Foliovision
@@ -172,9 +172,19 @@ function wp_mail_smtp_options_page() {
 	// (copied verbatim from wp-includes/pluggable.php)
 	// (Re)create it, if it's gone missing
 	if ( !is_object( $phpmailer ) || !is_a( $phpmailer, 'PHPMailer' ) ) {
-		require_once ABSPATH . WPINC . '/class-phpmailer.php';
-		require_once ABSPATH . WPINC . '/class-smtp.php';
-		$phpmailer = new PHPMailer( true );
+		// New way of getting PHPMailer in WordPress 5.5
+		// More: https://make.wordpress.org/core/2020/07/01/external-library-updates-in-wordpress-5-5-call-for-testing/
+		// But that one has issues, better look here: https://github.com/WordPress/WordPress/blob/master/wp-includes/pluggable.php#L215-L218
+		if( file_exists( ABSPATH . WPINC . '/PHPMailer/PHPMailer.php' ) ) {
+			require_once ABSPATH . WPINC . '/PHPMailer/PHPMailer.php';
+			require_once ABSPATH . WPINC . '/PHPMailer/SMTP.php';
+			require_once ABSPATH . WPINC . '/PHPMailer/Exception.php';
+			$phpmailer = new PHPMailer\PHPMailer\PHPMailer( true );
+		} else {
+			require_once ABSPATH . WPINC . '/class-phpmailer.php';
+			require_once ABSPATH . WPINC . '/class-smtp.php';
+			$phpmailer = new PHPMailer( true );			
+		}
 	}
 
 	// Send a test mail if necessary

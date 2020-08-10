@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: mail, smtp, wp_mail, mailer, phpmailer, sendgrid
 Requires at least: 2.7
-Tested up to: 4.9.6
+Tested up to: 5.5
 Stable tag: trunk
 
 Based on WP Mail SMTP. Also adds subject for display on SendGrid Activity Screen.
@@ -59,6 +59,9 @@ Password: your mail password
 4. Subject in the SendGrid Activity screen
 
 == Changelog ==
+
+= 0.10.3 =
+* Fix for WordPress 5.5 - depreation of class-phpmailer.php
 
 = 0.10.2 =
 * SendGrid - adding email subject to the X-SMTPAPI header if the STMP host is on SendGrid, thanks to Foliovision.
