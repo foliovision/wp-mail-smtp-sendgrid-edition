@@ -85,9 +85,32 @@ endif;
 if (!function_exists('phpmailer_init_smtp')) :
 // This code is copied, from wp-includes/pluggable.php as at version 2.2.2
 function phpmailer_init_smtp($phpmailer) {
+	
+	// If multisite constants are defined, apply those options
+	if( $settings = wp_mail_smtp_multisite_get_current_blog_settings() ) {
+		$phpmailer->Mailer = $settings['WPMS_MAILER'];
+
+		if ($settings['WPMS_SET_RETURN_PATH'])
+			$phpmailer->Sender = $phpmailer->From;
+
+		if ($settings['WPMS_MAILER'] == 'smtp') {
+			$phpmailer->SMTPSecure = $settings['WPMS_SSL'];
+			$phpmailer->Host = $settings['WPMS_SMTP_HOST'];
+			$phpmailer->Port = $settings['WPMS_SMTP_PORT'];
+			if ($settings['WPMS_SMTP_AUTH']) {
+				$phpmailer->SMTPAuth = true;
+				$phpmailer->Username = $settings['WPMS_SMTP_USER'];
+				$phpmailer->Password = $settings['WPMS_SMTP_PASS'];
+			}
+		}
+
+		// If you're using contstants, set any custom options here
+		$phpmailer = apply_filters('wp_mail_smtp_custom_options', $phpmailer);
+
+	}
 
 	// If constants are defined, apply those options
-	if (defined('WPMS_ON') && WPMS_ON) {
+	else if (defined('WPMS_ON') && WPMS_ON) {
 
 		$phpmailer->Mailer = WPMS_MAILER;
 
@@ -382,6 +405,18 @@ function wp_mail_smtp_options_page() {
 endif;
 
 
+function wp_mail_smtp_multisite_get_current_blog_settings() {
+	global $blog_id;
+	$use_blog_id = $blog_id ? $blog_id : 1;
+
+	if (defined('WPMS_MAIL_SETTINGS_PER_BLOG') && WPMS_MAIL_SETTINGS_PER_BLOG && !empty(WPMS_MAIL_SETTINGS_PER_BLOG[$use_blog_id]) ) {
+		return WPMS_MAIL_SETTINGS_PER_BLOG[$use_blog_id];
+	}
+
+	return false;
+}
+
+
 /**
  * This function adds the required page (only 1 at the moment).
  */
@@ -419,7 +454,12 @@ function wp_mail_smtp_mail_from ($orig) {
 		return $orig;
 	}
 
-	if (defined('WPMS_ON') && WPMS_ON) {
+	// If multisite constants are defined, apply those options
+	if( $settings = wp_mail_smtp_multisite_get_current_blog_settings() ) {
+		if ( !empty($settings['WPMS_MAIL_FROM']) )
+			return $settings['WPMS_MAIL_FROM'];
+	}
+	elseif (defined('WPMS_ON') && WPMS_ON) {
 		if (defined('WPMS_MAIL_FROM') && WPMS_MAIL_FROM != false)
 			return WPMS_MAIL_FROM;
 	}
@@ -441,7 +481,12 @@ function wp_mail_smtp_mail_from_name ($orig) {
 
 	// Only filter if the from name is the default
 	if ($orig == 'WordPress') {
-		if (defined('WPMS_ON') && WPMS_ON) {
+		// If multisite constants are defined, apply those options
+		if( $settings = wp_mail_smtp_multisite_get_current_blog_settings() ) {
+			if ( !empty($settings['WPMS_MAIL_FROM_NAME']) )
+				return $settings['WPMS_MAIL_FROM_NAME'];
+		}
+		elseif (defined('WPMS_ON') && WPMS_ON) {
 			if (defined('WPMS_MAIL_FROM_NAME') && WPMS_MAIL_FROM_NAME != false)
 				return WPMS_MAIL_FROM_NAME;
 		}
@@ -464,7 +509,12 @@ function wp_mail_smtp_sendgrid_headers ($atts) {
 
 	$bIsSendGrid = false;
 	$sMailHost = get_option('smtp_host');
-	if (defined('WPMS_ON') && WPMS_ON && WPMS_SMTP_HOST ) {
+
+	// If multisite constants are defined, apply those options
+	if( $settings = wp_mail_smtp_multisite_get_current_blog_settings() && !empty($settings['WPMS_SMTP_HOST']) ) {
+		$sMailHost = $settings['WPMS_SMTP_HOST'];
+	}
+	elseif (defined('WPMS_ON') && WPMS_ON && WPMS_SMTP_HOST ) {
 		$sMailHost = WPMS_SMTP_HOST;
 	}
 	if( stripos($sMailHost,'.sendgrid.') !== false ) $bIsSendGrid = true;
@@ -500,7 +550,7 @@ function wp_mail_plugin_action_links( $links, $file ) {
 // Add an action on phpmailer_init
 add_action('phpmailer_init','phpmailer_init_smtp');
 
-if (!defined('WPMS_ON') || !WPMS_ON) {
+if ( ( !defined('WPMS_ON') || !WPMS_ON ) && !wp_mail_smtp_multisite_get_current_blog_settings() ) {
 	// Whitelist our options
 	add_filter('whitelist_options', 'wp_mail_smtp_whitelist_options');
 	// Add the create pages options
