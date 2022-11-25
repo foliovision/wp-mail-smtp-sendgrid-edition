@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WP-Mail-SMTP SendGrid Edition
-Version: 0.10.3
+Version: 1.4.0
 Plugin URI: http://www.callum-macdonald.com/code/wp-mail-smtp/
 Description: Reconfigures the wp_mail() function to use SMTP instead of mail() and creates an options page to manage the settings. Adds subject to headers for SendGrid Activity Screen.
 Author: Foliovision

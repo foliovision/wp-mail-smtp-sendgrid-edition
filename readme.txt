@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: mail, smtp, wp_mail, mailer, phpmailer, sendgrid
 Requires at least: 2.7
-Tested up to: 5.5
+Tested up to: 6.1
 Stable tag: trunk
 
 Based on WP Mail SMTP. Also adds subject for display on SendGrid Activity Screen.
@@ -59,6 +59,10 @@ Password: your mail password
 4. Subject in the SendGrid Activity screen
 
 == Changelog ==
+
+= 1.4.0 =
+* Increased version number as Sucuri would show invalid vulnerability warnings thinking our plugin is the original WP Mail SMTP plugin. The original WP Mail SMTP plugins had some security issues up to version 1.3.3,but these were added after our fork was created.
+* Tested with WordPress 6.1
 
 = 0.10.3 =
 * Fix for WordPress 5.5 - depreation of class-phpmailer.php
