@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: mail, smtp, wp_mail, mailer, phpmailer, sendgrid
 Requires at least: 2.7
-Tested up to: 6.1
+Tested up to: 6.3
 Stable tag: trunk
 
 Based on WP Mail SMTP. Also adds subject for display on SendGrid Activity Screen.
@@ -165,4 +165,16 @@ Password: your mail password
 = 0.1 =
 * Initial approach, copying the wp_mail function and replacing it
 
+== Testing ==
 
+1. Go to Setting -> Email
+
+1.1. Setting "Send all WordPress emails via SMTP." should be checked.
+
+1.2. Fill in the SMTP Host, SMTP Port, Encryption, Authentication, Username and Password.
+
+1.3. Click "Save Changes" button.
+
+1.4. Send a test email to your email address.
+
+1.5. Check your email inbox and verify mail headers.
