@@ -164,17 +164,3 @@ Password: your mail password
 
 = 0.1 =
 * Initial approach, copying the wp_mail function and replacing it
-
-== Testing ==
-
-1. Go to Setting -> Email
-
-1.1. Setting "Send all WordPress emails via SMTP." should be checked.
-
-1.2. Fill in the SMTP Host, SMTP Port, Encryption, Authentication, Username and Password.
-
-1.3. Click "Save Changes" button.
-
-1.4. Send a test email to your email address.
-
-1.5. Check your email inbox and verify mail headers.
